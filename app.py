@@ -90,8 +90,10 @@ def init_assets():
         print(f"CRITICAL: Categories metadata not found at {CATEGORIES_PATH}")
         sys.exit(1)
 
-# Initialize on startup
-init_assets()
+# Initialize assets in a background thread to prevent Gunicorn worker startup timeout
+import threading
+threading.Thread(target=init_assets, daemon=True).start()
+
 
 @app.route('/')
 def home():
@@ -102,8 +104,9 @@ def home():
 def get_categories():
     """API endpoint to get the list of unique categories for the dropdown selectors."""
     if categories_metadata is None:
-        return jsonify({"error": "Categories metadata not loaded"}), 500
+        return jsonify({"error": "Categories metadata is initializing in the background. Please refresh in a few seconds."}), 503
     return jsonify(categories_metadata)
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -111,8 +114,14 @@ def predict():
     API endpoint that accepts laptop specification parameters, applies scaling
     and dummy-encoding exactly matching the training environment, and predicts the price.
     """
+    if model is None or scaler is None or feature_names is None:
+        return jsonify({
+            "success": False,
+            "error": "The Artificial Neural Network model is currently initializing in the background. Please wait a few seconds and try again."
+        }), 503
     try:
         data = request.json
+
         if not data:
             return jsonify({"error": "No input data provided"}), 400
             
