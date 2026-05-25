@@ -23,8 +23,32 @@ scaler = None
 feature_names = None
 categories_metadata = None
 
+
+def patch_keras_dense():
+    """
+    Dynamic monkey patch to bypass the Keras/TensorFlow quantization_config deserialization bug.
+    Interceptive wrapper pops 'quantization_config' from layer arguments during deserialization
+    to prevent: Unrecognized keyword arguments passed to Dense: {'quantization_config': None}.
+    """
+    try:
+        import tensorflow as tf
+        original_init = tf.keras.layers.Dense.__init__
+        
+        def patched_init(self, *args, **kwargs):
+            kwargs.pop('quantization_config', None)
+            return original_init(self, *args, **kwargs)
+            
+        tf.keras.layers.Dense.__init__ = patched_init
+        print("Successfully monkey-patched Keras Dense layer to bypass 'quantization_config' bug.")
+    except Exception as e:
+        print(f"Warning: Failed to monkey-patch Keras Dense layer: {e}")
+
+
 def init_assets():
     global model, scaler, feature_names, categories_metadata
+    
+    # Apply monkey patch before loading any Keras models
+    patch_keras_dense()
     
     print("Initializing web app assets...")
     
