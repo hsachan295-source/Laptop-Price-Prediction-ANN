@@ -100,6 +100,16 @@ def home():
     """Renders the main glassmorphic UI page."""
     return render_template('index.html')
 
+
+@app.route('/api/status', methods=['GET'])
+def get_status():
+    """API endpoint to check if the Keras AI model is ready."""
+    is_ready = model is not None and scaler is not None and feature_names is not None
+    return jsonify({
+        "ready": is_ready,
+        "message": "Ready" if is_ready else "The Artificial Neural Network model is currently initializing in the background. Please wait a few seconds..."
+    })
+
 @app.route('/api/categories', methods=['GET'])
 def get_categories():
     """API endpoint to get the list of unique categories for the dropdown selectors."""

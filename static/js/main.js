@@ -269,4 +269,40 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Boot ──────────────────────────────────────────────────────────────────
   showState('idle');
   loadCategories();
+
+  // ── AI Model Status Polling ───────────────────────────────────────────────
+  const warmupOverlay = document.getElementById('ai-warmup-overlay');
+  const warmupStatus  = document.getElementById('warmup-status-text');
+
+  async function checkAIStatus() {
+    try {
+      const res = await fetch('/api/status');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.ready) {
+          // Model is fully loaded and ready! Animate the overlay out smoothly
+          if (warmupOverlay) {
+            warmupOverlay.classList.add('fade-out');
+            setTimeout(() => {
+              warmupOverlay.remove();
+            }, 600);
+          }
+          return;
+        } else {
+          // Still loading in the background thread
+          if (warmupStatus) {
+            warmupStatus.textContent = "AI Neural Network model is loading... Warmup in progress (TensorFlow environment initialization).";
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Error checking AI status:", e);
+    }
+
+    // Poll again in 2 seconds
+    setTimeout(checkAIStatus, 2000);
+  }
+
+  // Start checking status on load
+  checkAIStatus();
 });
