@@ -78,7 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadCategories() {
     try {
       const res  = await fetch('/api/categories');
+      if (!res.ok) {
+        throw new Error(`Server returned HTTP ${res.status}`);
+      }
       const data = await res.json();
+      if (!data || !data.Company) {
+        throw new Error("Invalid or empty category metadata received from server");
+      }
 
       fill('Company',          data.Company,          'HP');
       fill('TypeName',         data.TypeName,          'Notebook');

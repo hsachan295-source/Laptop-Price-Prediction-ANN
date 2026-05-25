@@ -28,7 +28,47 @@ def init_assets():
     
     print("Initializing web app assets...")
     
-    # 1. Load the Keras ANN Model (Try native .keras first, then .pkl backup)
+    # 1. Load categories dropdown metadata (INSTANT)
+    if os.path.exists(CATEGORIES_PATH):
+        try:
+            with open(CATEGORIES_PATH, 'r', encoding='utf-8') as f:
+                categories_metadata = json.load(f)
+            print("Loaded categories metadata.")
+        except Exception as e:
+            print(f"CRITICAL: Failed to load categories: {e}")
+            sys.exit(1)
+    else:
+        print(f"CRITICAL: Categories metadata not found at {CATEGORIES_PATH}")
+        sys.exit(1)
+        
+    # 2. Load feature names (INSTANT)
+    if os.path.exists(FEATURES_PATH):
+        try:
+            with open(FEATURES_PATH, 'r', encoding='utf-8') as f:
+                feature_names = json.load(f)
+            print(f"Loaded {len(feature_names)} feature columns.")
+        except Exception as e:
+            print(f"CRITICAL: Failed to load features list: {e}")
+            sys.exit(1)
+    else:
+        print(f"CRITICAL: Features list not found at {FEATURES_PATH}")
+        sys.exit(1)
+
+    # 3. Load the StandardScaler (INSTANT)
+    if os.path.exists(SCALER_PATH):
+        try:
+            print(f"Loading StandardScaler from: {SCALER_PATH}")
+            with open(SCALER_PATH, 'rb') as f:
+                scaler = pickle.load(f)
+            print("StandardScaler loaded successfully!")
+        except Exception as e:
+            print(f"CRITICAL: Failed to load scaler: {e}")
+            sys.exit(1)
+    else:
+        print(f"CRITICAL: Scaler file not found at {SCALER_PATH}")
+        sys.exit(1)
+
+    # 4. Load the Keras ANN Model (SLOW - takes 1-2 minutes)
     if os.path.exists(MODEL_KERAS_PATH):
         try:
             print(f"Loading Keras model from native format: {MODEL_KERAS_PATH}")
@@ -48,46 +88,6 @@ def init_assets():
             
     if model is None:
         print("CRITICAL: Failed to load the ANN model from both native Keras and Pickle file.")
-        sys.exit(1)
-        
-    # 2. Load the StandardScaler
-    if os.path.exists(SCALER_PATH):
-        try:
-            print(f"Loading StandardScaler from: {SCALER_PATH}")
-            with open(SCALER_PATH, 'rb') as f:
-                scaler = pickle.load(f)
-            print("StandardScaler loaded successfully!")
-        except Exception as e:
-            print(f"CRITICAL: Failed to load scaler: {e}")
-            sys.exit(1)
-    else:
-        print(f"CRITICAL: Scaler file not found at {SCALER_PATH}")
-        sys.exit(1)
-        
-    # 3. Load feature names
-    if os.path.exists(FEATURES_PATH):
-        try:
-            with open(FEATURES_PATH, 'r', encoding='utf-8') as f:
-                feature_names = json.load(f)
-            print(f"Loaded {len(feature_names)} feature columns.")
-        except Exception as e:
-            print(f"CRITICAL: Failed to load features list: {e}")
-            sys.exit(1)
-    else:
-        print(f"CRITICAL: Features list not found at {FEATURES_PATH}")
-        sys.exit(1)
-        
-    # 4. Load categories dropdown metadata
-    if os.path.exists(CATEGORIES_PATH):
-        try:
-            with open(CATEGORIES_PATH, 'r', encoding='utf-8') as f:
-                categories_metadata = json.load(f)
-            print("Loaded categories metadata.")
-        except Exception as e:
-            print(f"CRITICAL: Failed to load categories: {e}")
-            sys.exit(1)
-    else:
-        print(f"CRITICAL: Categories metadata not found at {CATEGORIES_PATH}")
         sys.exit(1)
 
 # Initialize assets in a background thread to prevent Gunicorn worker startup timeout
