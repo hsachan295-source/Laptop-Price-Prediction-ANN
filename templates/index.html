@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Predict laptop prices instantly using a trained Keras Artificial Neural Network. Enter specs and get real-time price estimates in EUR, USD, and INR.">
+  <title>NeuralPrice — AI Laptop Price Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- Animated Mesh Background -->
+  <div class="bg-mesh">
+    <div class="bg-mesh-3"></div>
+  </div>
+
+  <div class="app">
+
+    <!-- ─── NAVBAR ─── -->
+    <nav class="navbar">
+      <div class="nav-logo">
+        <div class="nav-logo-icon"><i class="fa-solid fa-brain"></i></div>
+        NeuralPrice
+      </div>
+      <div class="nav-pill">
+        <span class="dot"></span>
+        ANN Model — Live
+      </div>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero">
+      <div class="hero-badge">
+        <i class="fa-solid fa-microchip"></i>
+        Keras · TensorFlow · ANN
+      </div>
+      <h1>Predict Laptop Prices<br>with <span class="grad">Neural Networks</span></h1>
+      <p class="hero-sub">
+        Feed your laptop specs into our trained artificial neural network and receive an instant, accurate price estimate powered by deep learning inference.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-value">1,303</div>
+          <div class="stat-label">Training Samples</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">337</div>
+          <div class="stat-label">Input Features</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">4-Layer</div>
+          <div class="stat-label">Deep MLP</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">€174–6099</div>
+          <div class="stat-label">Price Range</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── MAIN GRID ─── -->
+    <main class="content-grid">
+
+      <!-- ── LEFT: Form Card ── -->
+      <div class="glass form-card" id="form-card">
+
+        <!-- Step Navigation -->
+        <div class="steps">
+          <div class="step active" id="step-1" data-panel="panel-1">
+            <div class="step-num">1</div>
+            <div class="step-info">
+              <div class="step-label">Step 1</div>
+              <div class="step-title">Basic Info</div>
+            </div>
+          </div>
+          <div class="step-sep"></div>
+          <div class="step" id="step-2" data-panel="panel-2">
+            <div class="step-num">2</div>
+            <div class="step-info">
+              <div class="step-label">Step 2</div>
+              <div class="step-title">CPU & GPU</div>
+            </div>
+          </div>
+          <div class="step-sep"></div>
+          <div class="step" id="step-3" data-panel="panel-3">
+            <div class="step-num">3</div>
+            <div class="step-info">
+              <div class="step-label">Step 3</div>
+              <div class="step-title">Storage & OS</div>
+            </div>
+          </div>
+        </div>
+
+        <form id="predictor-form">
+
+          <!-- ── Panel 1: Basic ── -->
+          <div class="panel active" id="panel-1">
+            <div class="panel-title">
+              <i class="fa-solid fa-laptop"></i>
+              Basic Specifications
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="Company"><i class="fa-solid fa-building"></i> Brand</label>
+                <div class="input-box is-select">
+                  <select id="Company" name="Company" required>
+                    <option value="" disabled selected>Loading…</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="TypeName"><i class="fa-solid fa-tag"></i> Category</label>
+                <div class="input-box is-select">
+                  <select id="TypeName" name="TypeName" required>
+                    <option value="" disabled selected>Loading…</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-row triple">
+              <div class="field">
+                <label for="Inches"><i class="fa-solid fa-expand"></i> Screen Size</label>
+                <div class="input-box has-unit">
+                  <input type="number" id="Inches" name="Inches" min="10" max="21" step="0.1" value="15.6" required>
+                  <span class="field-unit">in</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="Ram"><i class="fa-solid fa-memory"></i> RAM</label>
+                <div class="input-box has-unit">
+                  <input type="number" id="Ram" name="Ram" min="2" max="64" step="2" value="8" required>
+                  <span class="field-unit">GB</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="Weight"><i class="fa-solid fa-weight-hanging"></i> Weight</label>
+                <div class="input-box has-unit">
+                  <input type="number" id="Weight" name="Weight" min="0.5" max="6" step="0.01" value="2.00" required>
+                  <span class="field-unit">kg</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-actions">
+              <span style="font-size:0.82rem; color:var(--text-3);">Step 1 of 3</span>
+              <button type="button" class="btn btn-primary" id="next-1" data-next="2">
+                Continue <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ── Panel 2: Hardware ── -->
+          <div class="panel" id="panel-2">
+            <div class="panel-title">
+              <i class="fa-solid fa-microchip"></i>
+              Processor & Display
+            </div>
+
+            <div class="field">
+              <label for="Cpu"><i class="fa-solid fa-microchip"></i> Processor</label>
+              <div class="input-box is-select">
+                <select id="Cpu" name="Cpu" required>
+                  <option value="" disabled selected>Loading processors…</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="Gpu"><i class="fa-solid fa-display"></i> Graphics Card</label>
+              <div class="input-box is-select">
+                <select id="Gpu" name="Gpu" required>
+                  <option value="" disabled selected>Loading GPUs…</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="ScreenResolution"><i class="fa-solid fa-expand-arrows-alt"></i> Screen Resolution</label>
+              <div class="input-box is-select">
+                <select id="ScreenResolution" name="ScreenResolution" required>
+                  <option value="" disabled selected>Loading resolutions…</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="panel-actions">
+              <button type="button" class="btn btn-ghost" data-prev="1">
+                <i class="fa-solid fa-arrow-left"></i> Back
+              </button>
+              <button type="button" class="btn btn-primary" id="next-2" data-next="3">
+                Continue <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ── Panel 3: Storage & OS ── -->
+          <div class="panel" id="panel-3">
+            <div class="panel-title">
+              <i class="fa-solid fa-hard-drive"></i>
+              Storage & Operating System
+            </div>
+
+            <div class="field">
+              <label for="Memory"><i class="fa-solid fa-database"></i> Storage Configuration</label>
+              <div class="input-box is-select">
+                <select id="Memory" name="Memory" required>
+                  <option value="" disabled selected>Loading storage options…</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="OpSys"><i class="fa-brands fa-windows"></i> Operating System</label>
+              <div class="input-box is-select">
+                <select id="OpSys" name="OpSys" required>
+                  <option value="" disabled selected>Loading OS options…</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="panel-actions">
+              <button type="button" class="btn btn-ghost" data-prev="2">
+                <i class="fa-solid fa-arrow-left"></i> Back
+              </button>
+              <button type="submit" class="btn btn-predict" id="btn-submit">
+                <span class="btn-text"><i class="fa-solid fa-bolt"></i> &nbsp;Predict Price</span>
+                <div class="spinner"></div>
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- ── RIGHT: Result Card ── -->
+      <div class="glass result-card" id="result-card">
+
+        <!-- State 1: Idle / Waiting -->
+        <div class="result-idle" id="state-idle">
+          <div class="idle-visual">
+            <div class="idle-ring-2"></div>
+            <div class="idle-ring"></div>
+            <div class="idle-circle">🤖</div>
+          </div>
+          <h3>Ready for Inference</h3>
+          <p>Configure your laptop's specifications on the left and click <strong>Predict Price</strong> to run the neural network.</p>
+          <div class="idle-features">
+            <div class="idle-feat">
+              <span class="idle-feat-icon">🧠</span>
+              <div class="idle-feat-name">Model</div>
+              <div class="idle-feat-val">Keras MLP</div>
+            </div>
+            <div class="idle-feat">
+              <span class="idle-feat-icon">⚡</span>
+              <div class="idle-feat-name">Input Dims</div>
+              <div class="idle-feat-val">337 features</div>
+            </div>
+            <div class="idle-feat">
+              <span class="idle-feat-icon">📐</span>
+              <div class="idle-feat-name">Scaler</div>
+              <div class="idle-feat-val">StandardScaler</div>
+            </div>
+            <div class="idle-feat">
+              <span class="idle-feat-icon">🎯</span>
+              <div class="idle-feat-name">Encoding</div>
+              <div class="idle-feat-val">One-Hot (get_dummies)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- State 2: Loading -->
+        <div class="result-loading" id="state-loading">
+          <div class="orb">
+            <div class="orb-inner"></div>
+            <div class="orb-ring-1"></div>
+            <div class="orb-ring-2"></div>
+            <div class="orb-dot"></div>
+          </div>
+          <h3>Running Inference</h3>
+          <p>Encoding 337 features and running forward pass through the 4-layer neural network.</p>
+          <div class="load-steps">
+            <div class="load-step done" id="ls-1">
+              <div class="load-step-icon"><i class="fa-solid fa-check"></i></div>
+              Preprocessing inputs
+            </div>
+            <div class="load-step active" id="ls-2">
+              <div class="load-step-icon"><i class="fa-solid fa-spinner fa-spin"></i></div>
+              Scaling numerical features
+            </div>
+            <div class="load-step" id="ls-3">
+              <div class="load-step-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+              Neural network forward pass
+            </div>
+          </div>
+        </div>
+
+        <!-- State 3: Result Output -->
+        <div class="result-output" id="state-result">
+          <div class="result-topbar"></div>
+          <div class="result-body">
+
+            <div class="result-badge">
+              <i class="fa-solid fa-circle-check"></i> Prediction Complete
+            </div>
+
+            <div>
+              <div class="result-label">Estimated Market Price</div>
+              <div class="price-hero">
+                <div class="price-main" id="price-display">€0.00</div>
+              </div>
+            </div>
+
+            <!-- Currency Switcher -->
+            <div class="currency-row">
+              <button class="curr-tab active" data-curr="EUR" id="curr-EUR">
+                <i class="fa-solid fa-euro-sign"></i> EUR
+              </button>
+              <button class="curr-tab" data-curr="USD" id="curr-USD">
+                <i class="fa-solid fa-dollar-sign"></i> USD
+              </button>
+              <button class="curr-tab" data-curr="INR" id="curr-INR">
+                <i class="fa-solid fa-indian-rupee-sign"></i> INR
+              </button>
+            </div>
+
+            <!-- Metrics -->
+            <div class="metrics">
+              <div class="metric">
+                <div class="metric-label">In USD</div>
+                <div class="metric-value violet" id="usd-val">$—</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">In INR</div>
+                <div class="metric-value cyan" id="inr-val">₹—</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Int. Inches</div>
+                <div class="metric-value" id="meta-inches">—</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Scaled RAM</div>
+                <div class="metric-value" id="meta-ram">—</div>
+              </div>
+            </div>
+
+            <!-- Model Info Row -->
+            <div class="model-info">
+              <div class="model-info-icon">
+                <i class="fa-solid fa-brain"></i>
+              </div>
+              <div class="model-info-text">
+                <div class="model-name">Keras Sequential ANN</div>
+                <div class="model-arch">Dense(128) → Dense(128) → Dense(64) → Dense(32) → Dense(1)</div>
+              </div>
+              <div class="model-acc">MSE Loss</div>
+            </div>
+
+            <!-- Reset -->
+            <button class="btn-reset" id="btn-reset">
+              <i class="fa-solid fa-rotate-left"></i> New Prediction
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer>
+      Built with <span>Keras · TensorFlow · Flask · Vanilla JS</span> — AI Laptop Price Intelligence System
+    </footer>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
